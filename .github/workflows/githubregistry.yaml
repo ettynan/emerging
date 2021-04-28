@@ -20,10 +20,27 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Push to GitHub Packages
+      - name: Push preprocess to GitHub Packages
         uses: docker/build-push-action@v2
         with:
-          context: .
+          context: ./pipeline/preprocess
+          tags: ghcr.io/ettynan/preprocess:latest
           push: true
-          tags: ghcr.io/ettynan/app:latest
-          
+      - name: Push train to GitHub Packages
+        uses: docker/build-push-action@v2
+        with:
+          context: ./pipeline/train
+          tags: ghcr.io/ettynan/train:latest
+          push: true
+      - name: Push test to GitHub Packages
+        uses: docker/build-push-action@v2
+        with:
+          context: ./pipeline/test
+          tags: ghcr.io/ettynan/test:latest
+          push: true
+      - name: Push deploy to GitHub Packages
+        uses: docker/build-push-action@v2
+        with:
+          context: ./pipeline/git_repo
+          tags: ghcr.io/ettynan/push_model:latest
+          push: true
